@@ -52,10 +52,10 @@ const BarChart = ({ data = {
     
     // Create new chart instance
     chartInstance.current = new Chart(ctx, {
-      type: 'line',
+      type: 'bar',
       data: data,
       options: {
-        responsive: true,
+        // responsive: true,
         plugins: {
           legend: {
             position: 'top',
@@ -78,7 +78,7 @@ const BarChart = ({ data = {
   }, [data]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4">
+    <div className="bg-slate-700 mx-auto ">
       <canvas ref={chartRef}></canvas>
     </div>
   );
