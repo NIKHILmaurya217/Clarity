@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { initializeAppTask } from '../../../utils/firebase';
+import { initializeAppTask } from '../../utils/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -12,62 +12,50 @@ const SignIn = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const firebase_instanse = initializeAppTask()
-    const handleSubmit = async (event: any) => { // No need to type event here
+    const handleSubmit = async (event: any) => { 
         event.preventDefault();
         setLoading(true);
         setError(null);
         try {
             const userCredential = await signInWithEmailAndPassword(firebase_instanse, email, password);
             const user = userCredential.user;
-            const idToken = await user.getIdToken(); // Get the ID token
-
-            const response = await fetch('http://127.0.0.1:8000/api/signin/', { // Corrected URL
+            const idToken = await user.getIdToken();
+            const userData = {
+                "name":user.displayName,
+                "email":user.email
+            }
+            const response = await fetch('http://127.0.0.1:8000/api/signin/', { 
 
                 method: 'POST',
 
                 headers: {
-
                     'Content-Type': 'application/json',
                     'Authorization': `${idToken}`
-
                 },
                 body: JSON.stringify({ email, password }),
-
-
             });
-
-
-
             if (!response.ok) {
-
-                const errorData = await response.json(); // Get error details from the backend
-
+                const errorData = await response.json(); 
                 throw new Error(errorData.error || 'SignIn failed!'); // Use backend error message
 
             }
-
             const data = await response.json();
-
-            console.log('Success:', data);
-
+            // localStorage.setItem("user",JSON.stringify(userData))
             localStorage.setItem('token', idToken);
-            localStorage.setItem('user', data['user'].email);
-
-            router.push('/'); // Or wherever you want to redirect
-
+            router.push('/');
+            
         } catch (err) {
-
+            
             setError(err instanceof Error ? err.message : 'An unknown error occurred');
 
         } finally {
-
             setLoading(false);
 
         }
 
     };
     return (
-        <div className="flex flex-col items-center text-black justify-center min-h-screen dark:bg-black bg-gray-100">
+        <div className="flex flex-col items-center w-full text-black justify-center min-h-screen  dark:bg-slate-900 bg-slate-400">
             <form
                 onSubmit={handleSubmit}
                 className="bg-white p-6 rounded-lg shadow-md w-96"
@@ -79,6 +67,7 @@ const SignIn = () => {
                     <input
                         type="email"
                         value={email}
+                        placeholder='Your email'
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         className="w-full p-2 border border-gray-300 rounded mt-1"
@@ -89,6 +78,7 @@ const SignIn = () => {
                     <input
                         type="password"
                         value={password}
+                        placeholder='Password (e.g. Abc%77jRc)'
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         className="w-full p-2 border border-gray-300 rounded mt-1"
@@ -102,13 +92,9 @@ const SignIn = () => {
                     {loading ? 'Signing In...' : 'Sign In'}
                 </button>
             </form>
-            <Link className='text-white' href="/signup">Don't have account? SignUp here</Link>
+            <Link className='text-white' href="/signup">Don't have account? Signup here</Link>
         </div>
     );
 }
 
 export default SignIn;
-
-function getCookie(arg0: string): string {
-    throw new Error('Function not implemented.');
-}

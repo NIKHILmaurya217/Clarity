@@ -17,4 +17,10 @@ const  initializeAppTask = (()=> {
     return auth
 }) 
 
+const getAppInstance = (()=>{
+    const app = initializeApp(firebaseConfig); // Use the config object    
+    return app
+}) 
+
 export { initializeAppTask };
+export {getAppInstance};

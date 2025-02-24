@@ -7,6 +7,7 @@ import { useState } from 'react';
 const SignUp = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -21,11 +22,14 @@ const SignUp = () => {
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ email, password }),
+              body: JSON.stringify({ name ,email, password }),
             });
       
             if (!response.ok) {
-              throw new Error('Signup failed!');
+              const data = await response.json();
+              console.log(data.error);
+              throw new Error(data.error || 'Signup failed!');
+              // throw new Error('Signup failed!');
             }
 
             const data = await response.json();
@@ -38,7 +42,7 @@ const SignUp = () => {
           }
         };
   return (
-    <div className="flex flex-col items-center text-black justify-center min-h-screen dark:bg-black bg-gray-100">
+    <div className="flex flex-col items-center w-full text-black justify-center min-h-screen  dark:bg-slate-900 bg-slate-400">
     <form
       onSubmit={handleSubmit}
       className="bg-white p-6 rounded-lg shadow-md w-96"
@@ -46,10 +50,22 @@ const SignUp = () => {
       <h2 className="text-2xl font-semibold mb-4">Signup</h2>
       {error && <p className="text-red-500 mb-2">{error}</p>}
       <div className="mb-4">
+        <label className="block text-gray-700">Name</label>
+        <input
+          type="text"
+          value={name}
+          placeholder='Enter your name'
+          onChange={(e) => setName(e.target.value)}
+          required
+          className="w-full p-2 border border-gray-300 rounded mt-1"
+        />
+        </div>
+      <div className="mb-4">
         <label className="block text-gray-700">Email</label>
         <input
           type="email"
           value={email}
+          placeholder='Your email'
           onChange={(e) => setEmail(e.target.value)}
           required
           className="w-full p-2 border border-gray-300 rounded mt-1"
@@ -60,6 +76,7 @@ const SignUp = () => {
         <input
           type="password"
           value={password}
+          placeholder='Password (e.g. Abc%77jRc)'
           onChange={(e) => setPassword(e.target.value)}
           required
           className="w-full p-2 border border-gray-300 rounded mt-1"
@@ -73,7 +90,7 @@ const SignUp = () => {
         {loading ? 'Signing up...' : 'Sign Up'}
       </button>
     </form>
-    <Link className='text-white' href="/login">Already have account? SignIn here</Link>
+    <Link className='text-white' href="/login">Already have account? Signin here</Link>
   </div>
   )
 }

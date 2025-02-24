@@ -1,5 +1,4 @@
 'use client'
-
 import { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import { ChartData } from 'chart.js';
@@ -9,10 +8,10 @@ interface BarChartProps {
 }
 
 const BarChart = ({ data = {
-  labels: ['January', 'February', 'March', 'April', 'May'],
+  labels: ['January', 'February', 'March', 'April', 'May',"June","July","August","September","October","November","December"],
   datasets: [{
     label: 'Sample Data',
-    data: [65, 59, 80, 81, 56],
+    data: [65, 59, 80, 81, 56, 60, 99, 100, 90, 80, 70, 60],
     backgroundColor: [
       'rgba(255, 99, 132, 0.6)',
       'rgba(54, 162, 235, 0.6)',
@@ -27,7 +26,7 @@ const BarChart = ({ data = {
       'rgba(75, 192, 192, 1)',
       'rgba(153, 102, 255, 1)',
     ],
-    borderWidth: 1
+    borderWidth:1, 
   }]
 } }: BarChartProps) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
@@ -55,7 +54,7 @@ const BarChart = ({ data = {
       type: 'bar',
       data: data,
       options: {
-        // responsive: true,
+        responsive: true,
         plugins: {
           legend: {
             position: 'top',
@@ -78,8 +77,8 @@ const BarChart = ({ data = {
   }, [data]);
 
   return (
-    <div className="bg-slate-700 mx-auto ">
-      <canvas ref={chartRef}></canvas>
+    <div >
+      <canvas className='h-[40vh] lg:h-[40vh] max-w-full w-full' ref={chartRef}></canvas>
     </div>
   );
 };
