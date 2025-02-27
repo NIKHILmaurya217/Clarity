@@ -40,7 +40,7 @@ const SignIn = () => {
 
             }
             const data = await response.json();
-            // localStorage.setItem("user",JSON.stringify(userData))
+            localStorage.setItem("user",JSON.stringify(userData))
             localStorage.setItem('token', idToken);
             router.push('/');
             
