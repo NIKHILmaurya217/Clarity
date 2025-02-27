@@ -5,25 +5,21 @@ import Link from 'next/link';
 import { initializeAppTask } from "@/utils/firebase"
 import { onAuthStateChanged } from "firebase/auth";
 
+type User = {};
 
 const Header = () => {
   const auth = initializeAppTask();
-  const [isUserAuth, setIsUserAuth] = useState(false);
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      const token = localStorage.getItem('token');
-      setIsUserAuth(!!(user && token));
-    });
-    return () => unsubscribe(); // Cleanup function to avoid memory leaks
-  }, []);
-  // onAuthStateChanged(auth,(user) => {
-  //   const token = localStorage.getItem('token');
-  //   if (user && token) {
-  //     setIsUserAuth(true)
-  //     return;
-  //   }
-  //   setIsUserAuth(false);
-  // },);
+
+  // const [isUserAuth, setIsUserAuth] = useState(false);
+  function useAuth() {
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    useEffect(() => {
+      const unsub = onAuthStateChanged(auth,(user) => setCurrentUser(user));
+      return unsub;
+    }, [])
+    return currentUser;
+  }
+  const user = useAuth();
   return (
     <nav className="hidden sm:block sticky left-0 top-0 h-[100vh] w-[20vw] bg-gradient-to-br from-slate-700  to-slate-700">
       <h1 className="text-white cursor-pointer font-bold text-xl md:text-3xl md:px-4 py-1 px-2">Clarity</h1>
@@ -37,7 +33,7 @@ const Header = () => {
         <Link href="#">
           <li className=" bg-slate-500 text-white border-slate-500 text-sm md:px-6 py-1 px-2 hover:bg-slate-600 w-100">About</li>
         </Link>
-        {isUserAuth ? (
+        {user ? (
           <li className=" bg-slate-500 text-white border-slate-500 text-sm md:px-6 py-1 px-2 hover:bg-slate-600 w-100">
             <LogOutButton />
           </li>)
